@@ -46,6 +46,30 @@ export default function Main(props) {
     '«',
   ];
 
+  const guessRows = [
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+  ];
+  // for every guessRow =>
+
+  const guessRowsDisplay = guessRows.map((row, rowIndex) => {
+    return (
+      <div id={`guessRow-${rowIndex}`} key={rowIndex}>
+        {/* tileElement */}
+        {row.map((guess, guessIndex) => (
+          <div
+            id={`guessRow-${rowIndex}-tile-${guessIndex}`}
+            className='tile'
+          ></div>
+        ))}
+      </div>
+    );
+  });
+
   const handleClick = key => {
     console.log(`${key} clicked!`);
   };
@@ -70,10 +94,10 @@ export default function Main(props) {
             "result_msg":"Entry word not found" */}
       {/* https://rapidapi.com/sheharyar566/api/random-words5/?utm_source=ANIA-KUBOW&utm_medium=DevRel&utm_campaign=DevRel
        */}
+      {/* <div className='game-container'></div> */}
+      {/* <div className='msg-container'></div> */}
+      <div className='tile-container'>{guessRowsDisplay}</div>
       <div className='key-container'>{keyboard}</div>
-      <div className='game-container'></div>
-      <div className='msg-container'></div>
-      <div className='tile-container'></div>
     </div>
   );
 }
