@@ -208,9 +208,9 @@ export default function Navbar({ toggleDark, setToggleDark }) {
             component='div'
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
-            <NavLink to='/' className='navbar-brand'>
+            {/* <NavLink to='/' className='navbar-brand'>
               <img src={logo} alt='Brand logo' id='nav-logo' />
-            </NavLink>
+            </NavLink> */}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -256,7 +256,10 @@ export default function Navbar({ toggleDark, setToggleDark }) {
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
           >
             <NavLink to='/' className='navbar-brand'>
-              <img src={logo} alt='Brand logo' id='nav-logo' />
+              {/* <img src={logo} alt='Brand logo' id='nav-logo' /> */}
+              <h1 className='text-light' style={{ fontColor: '#cfcece' }}>
+                GWORDLE
+              </h1>
             </NavLink>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>

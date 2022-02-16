@@ -8,50 +8,72 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import rainbowSpinLoader from './common/rainbowSpinLoader'; // just return <e>rainbowSpinLoader()</e>
 // User-generated component imports go here
 
-/* To implement this bad-boy (slaps computer), render under a isLoading conditional. 
-   Colors can be changed in the css to, say, match the theme of the page */
-function loader() {
-  return (
-    <div className='loader'>
-      <div className='loader-inner'>
-        <div className='loader-line-wrap'>
-          <div className='loader-line'></div>
-        </div>
-        <div className='loader-line-wrap'>
-          <div className='loader-line'></div>
-        </div>
-        <div className='loader-line-wrap'>
-          <div className='loader-line'></div>
-        </div>
-        <div className='loader-line-wrap'>
-          <div className='loader-line'></div>
-        </div>
-        <div className='loader-line-wrap'>
-          <div className='loader-line'></div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Main(props) {
+  const tileDisplay = document.querySelector('.tile-container');
+  // const keyboard = document.querySelector('.key-container');
+
+  const keys = [
+    'Q',
+    'W',
+    'E',
+    'R',
+    'T',
+    'Y',
+    'U',
+    'I',
+    'O',
+    'P',
+    'A',
+    'S',
+    'D',
+    'F',
+    'G',
+    'H',
+    'J',
+    'K',
+    'L',
+    'ENTER',
+    'Z',
+    'X',
+    'C',
+    'V',
+    'B',
+    'N',
+    'M',
+    '«',
+  ];
+
+  const handleClick = key => {
+    console.log(`${key} clicked!`);
+  };
+
+  const keyboard = keys.map((key, index) => {
+    return (
+      <button
+        className='btn'
+        id={index}
+        onClick={() => handleClick(key)}
+        key={index}
+      >
+        {key}
+      </button>
+    );
+  });
+
   return (
     <div className='container'>
-      <h1>First Time Here?</h1>
-      <ul>
-        <li>
-          Change the repo this pushes to! Otherwise you'll be pushing changes{' '}
-          <strong>to the template!!!</strong>
-        </li>
-        <li>
-          Change the name of the app in <code>package.json</code>
-        </li>
-        <li>
-          Run <code>npm i</code> first
-        </li>
-      </ul>
+      {/* https://rapidapi.com/twinword/api/word-dictionary/
+            "result_msg":"Success"
+            "result_msg":"Entry word not found" */}
+      {/* https://rapidapi.com/sheharyar566/api/random-words5/?utm_source=ANIA-KUBOW&utm_medium=DevRel&utm_campaign=DevRel
+       */}
+      <div className='key-container'>{keyboard}</div>
+      <div className='game-container'></div>
+      <div className='msg-container'></div>
+      <div className='tile-container'></div>
     </div>
   );
 }

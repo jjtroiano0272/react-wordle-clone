@@ -32,15 +32,20 @@ export default function App() {
   });
 
   return (
-    <ThemeProvider theme={theme}>
-      <Paper style={{ height: '100vh' }}>
-        <Navbar toggleDark={toggleDark} setToggleDark={setToggleDark} />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/my-profile' element={<UserProfile />} />
-        </Routes>
-      </Paper>
-    </ThemeProvider>
+    // <ThemeProvider theme={theme}>
+    // <Paper
+    // style={{ height: '100vh', backgroundColor: '#121212', color: '#fff' }}
+    // style={{ height: '100vh' }}
+    // >
+    <>
+      <Navbar toggleDark={toggleDark} setToggleDark={setToggleDark} />
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/my-profile' element={<UserProfile />} />
+      </Routes>
+    </>
+    // </Paper>
+    // </ThemeProvider>
   );
 }
