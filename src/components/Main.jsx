@@ -15,6 +15,7 @@ export default function Main(props) {
   const tileDisplay = document.querySelector('.tile-container');
   // const keyboard = document.querySelector('.key-container');
 
+  const word = 'SUPER';
   const keys = [
     'Q',
     'W',
@@ -46,6 +47,9 @@ export default function Main(props) {
     '«',
   ];
 
+  let currentRow = 0;
+  let currentTile = 0;
+
   const guessRows = [
     ['', '', '', '', ''],
     ['', '', '', '', ''],
@@ -70,8 +74,47 @@ export default function Main(props) {
     );
   });
 
-  const handleClick = key => {
-    console.log(`${key} clicked!`);
+  const handleClick = letter => {
+    console.log(`${letter} clicked!`);
+
+    if (letter === '«') {
+      console.log('delete letter');
+      deleteLetter();
+      return;
+    }
+    if (letter === 'ENTER') {
+      console.log('check row');
+      return;
+    }
+    addLetter(letter);
+  };
+
+  const addLetter = letter => {
+    // TODO: Here's the part you'll change for different game variants.
+    if (currentTile < 5 && currentRow < 6) {
+      const tile = document.getElementById(
+        `guessRow-${currentRow}-tile-${currentTile}`
+      );
+      tile.textContent = letter;
+
+      guessRows[currentRow][currentTile] = letter;
+      tile.setAttribute('data', letter);
+
+      currentTile++;
+      console.log(guessRows);
+    }
+  };
+
+  const deleteLetter = () => {
+    if (currentTile > 0) {
+      currentTile--;
+      const tile = document.getElementById(
+        `guessRow-${currentRow}-tile-${currentTile}`
+      );
+      tile.textContent = '';
+      guessRows[currentRow][currentTile] = '';
+      tile.setAttribute('data', '');
+    }
   };
 
   const keyboard = keys.map((key, index) => {
@@ -88,16 +131,13 @@ export default function Main(props) {
   });
 
   return (
-    <div className='container'>
-      {/* https://rapidapi.com/twinword/api/word-dictionary/
-            "result_msg":"Success"
-            "result_msg":"Entry word not found" */}
-      {/* https://rapidapi.com/sheharyar566/api/random-words5/?utm_source=ANIA-KUBOW&utm_medium=DevRel&utm_campaign=DevRel
-       */}
-      {/* <div className='game-container'></div> */}
+    // <div className='container'>
+
+    <div className='game-container'>
       {/* <div className='msg-container'></div> */}
       <div className='tile-container'>{guessRowsDisplay}</div>
       <div className='key-container'>{keyboard}</div>
     </div>
+    // </div>
   );
 }

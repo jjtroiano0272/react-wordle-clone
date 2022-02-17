@@ -2,22 +2,20 @@ import React, { useState } from 'react';
 
 export default function Footer(props) {
   return (
-    <footer className='footer fixed-bottom mt-5'>
+    <footer className='footer bg-secondary mt-5 py-5'>
       <div className='container'>
         <div>
           <p>
-            <small className='text-secondary mb-2'>© 2021 J. Troiano</small>
+            <small className='text-light mb-2'>© 2022 J. Troiano</small>
           </p>
         </div>
         <div className='ms-auto'>
-          <p>
-            <a
-              href='https://portfolio-page-vite-6r4.pages.dev/'
-              className='pointer text-secondary'
-            >
-              View Profile
-            </a>
-          </p>
+          <a
+            href='https://jonathan-troiano.netlify.app/'
+            className='text-light text-decoration-none'
+          >
+            View Profile
+          </a>
         </div>
       </div>
     </footer>
