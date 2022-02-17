@@ -12,6 +12,8 @@ import rainbowSpinLoader from './common/rainbowSpinLoader'; // just return <e>ra
 // User-generated component imports go here
 
 export default function Main(props) {
+  const [gameOver, setGameOver] = useState(false);
+
   const tileDisplay = document.querySelector('.tile-container');
   // const keyboard = document.querySelector('.key-container');
 
@@ -67,6 +69,7 @@ export default function Main(props) {
         {row.map((guess, guessIndex) => (
           <div
             id={`guessRow-${rowIndex}-tile-${guessIndex}`}
+            key={guessIndex}
             className='tile'
           ></div>
         ))}
@@ -134,12 +137,55 @@ export default function Main(props) {
     }
   };
 
+  const showMessage = message => {
+    // GFYCat Gif
+    // return (
+    //   <div
+    //     style={{ position: 'relative', paddingBottom: 'calc(75.00% + 44px)' }}
+    //   >
+    //     <iframe
+    //       src='https://gfycat.com/ifr/BossyDownrightCassowary'
+    //       frameborder='0'
+    //       scrolling='no'
+    //       width='40%'
+    //       height='40%'
+    //       style={{ position: 'absolute', top: '20%', left: '0' }}
+    //     />
+    //   </div>
+    // );
+    // return <p className='lead text-light'>{message}</p>;
+
+    // Vanilla JS version
+    const messageDisplay = document.querySelector('.msg-container'); // This fixes it returning null
+    const messageElement = document.createElement('p');
+    messageElement.textContent = message;
+    messageDisplay.append(messageElement);
+    setTimeout(() => messageDisplay.removeChild(messageElement), 2000);
+
+    // React approach
+  };
+
   const checkRow = () => {
     // If guess row array is filled
     const guess = guessRows[currentRow].join('');
 
-    if (currentTile === 5) {
+    if (currentTile > 4) {
       console.log(`Guess is ${guess}\nWordle is ${word}`);
+      if (guess === word) {
+        showMessage('Success!');
+        setGameOver(true);
+        return;
+      } else {
+        if (currentRow >= 5) {
+          setGameOver(false);
+          showMessage('Game over!');
+          return;
+        }
+        if (currentRow < 5) {
+          currentRow++;
+          currentTile = 0;
+        }
+      }
     }
   };
 
@@ -147,7 +193,9 @@ export default function Main(props) {
     // <div className='container'>
 
     <div className='game-container'>
-      {/* <div className='msg-container'></div> */}
+      <div className='msg-container'>
+        {/* {gameOver && showMessage('helloooooo')} */}
+      </div>
       <div className='tile-container'>{guessRowsDisplay}</div>
       <div className='key-container'>{keyboard}</div>
     </div>
