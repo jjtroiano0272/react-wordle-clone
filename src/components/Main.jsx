@@ -74,19 +74,37 @@ export default function Main(props) {
     );
   });
 
+  const keyboard = keys.map((key, index) => {
+    return (
+      <button
+        className='btn'
+        id={index}
+        onClick={() => handleClick(key)}
+        key={index}
+      >
+        {key}
+      </button>
+    );
+  });
+
   const handleClick = letter => {
     console.log(`${letter} clicked!`);
 
     if (letter === '«') {
       console.log('delete letter');
+      console.log(`guessRows: ${guessRows}`);
       deleteLetter();
       return;
     }
     if (letter === 'ENTER') {
+      checkRow();
       console.log('check row');
+      console.log(`guessRows: ${guessRows}`);
       return;
     }
+
     addLetter(letter);
+    console.log(`guessRows: ${guessRows}`);
   };
 
   const addLetter = letter => {
@@ -101,7 +119,6 @@ export default function Main(props) {
       tile.setAttribute('data', letter);
 
       currentTile++;
-      console.log(guessRows);
     }
   };
 
@@ -117,18 +134,14 @@ export default function Main(props) {
     }
   };
 
-  const keyboard = keys.map((key, index) => {
-    return (
-      <button
-        className='btn'
-        id={index}
-        onClick={() => handleClick(key)}
-        key={index}
-      >
-        {key}
-      </button>
-    );
-  });
+  const checkRow = () => {
+    // If guess row array is filled
+    const guess = guessRows[currentRow].join('');
+
+    if (currentTile === 5) {
+      console.log(`Guess is ${guess}\nWordle is ${word}`);
+    }
+  };
 
   return (
     // <div className='container'>
