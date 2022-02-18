@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
+import $ from 'jquery';
 import axios from 'axios';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -171,6 +172,7 @@ export default function Main(props) {
 
     if (currentTile > 4) {
       console.log(`Guess is ${guess}\nWordle is ${word}`);
+      flipTile();
       if (guess === word) {
         showMessage('Success!');
         setGameOver(true);
@@ -187,6 +189,23 @@ export default function Main(props) {
         }
       }
     }
+  };
+
+  const flipTile = () => {
+    const rowTiles = document.querySelector(
+      `#guessRow-${currentRow}`
+    ).childNodes;
+
+    rowTiles.forEach((tile, index) => {
+      const dataLetter = tile.getAttribute('data');
+      if (dataLetter === word[index]) {
+        tile.classList.add('green-overlay', 'text-light');
+      } else if (word.includes(dataLetter)) {
+        tile.classList.add('yellow-overlay', 'text-light');
+      } else {
+        tile.classList.add('grey-overlay', 'text-light');
+      }
+    });
   };
 
   return (
