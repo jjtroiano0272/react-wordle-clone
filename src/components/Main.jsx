@@ -18,19 +18,7 @@ export default function Main(props) {
   const tileDisplay = document.querySelector('.tile-container');
   // const keyboard = document.querySelector('.key-container');
 
-  var word = 'SUPER';
-
-  // const getWord = () => {
-  //   fetch('http://localhost:8000/word')
-  //     .then(response => response.json())
-  //     .then(json => {
-  //       console.log(json);
-  //       word = json.toUppserCase();
-  //     })
-  //     .catch(err => console.log(err));
-  // };
-  // getWord();
-
+  const word = 'SUPER';
   const keys = [
     'Q',
     'W',
@@ -203,40 +191,34 @@ export default function Main(props) {
     }
   };
 
-  function delay(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
-  }
   const addColorToKey = (keyLetter, color) => {
-    // DEBUG: key is the thing that is returning null
     const key = document.getElementById(keyLetter);
-    console.log(key);
-    // DEBUG: this is where we are getting that uncaught error of reading null
-    key.classList.add('color');
+    key.classList.add(color);
   };
 
   // remove color from Key?
 
   const flipTile = () => {
-    let checkWord = word;
-    const guess = [];
     const rowTiles = document.querySelector(
       `#guessRow-${currentRow}`
     ).childNodes;
+    let checkWord = word;
+    const guess = [];
 
-    rowTiles.forEach(tile => {
-      guess.push({ letter: tile.getAttribute('data'), color: 'grey-overlay' });
-    });
+    rowTitles.forEach(tile =>
+      guess.push({ letter: tile.getAtribute('data'), color: 'grey-overlay' })
+    );
 
     // If user guess has the correct letter in the correct spot, color it green
-    guess.forEach((guess, index) => {
-      if (guess.letter == word[index]) {
+    guess.forEach((gues, index) => {
+      if (guess.letter === word[index]) {
         guess.color = 'green-overlay';
         checkWord = checkWord.replace(guess.letter, '');
       }
     });
 
     // If user guess has the correct letter in the wrong spot, color it yellow
-    guess.forEach(guess => {
+    guess.forEach((gues, index) => {
       if (checkWord.includes(guess.letter)) {
         guess.color = 'yellow-overlay';
         checkWord = checkWord.replace(guess.letter, '');
@@ -245,7 +227,6 @@ export default function Main(props) {
 
     rowTiles.forEach((tile, index) => {
       setTimeout(() => {
-        tile.classList.add('flip');
         tile.classList.add(guess[index].color);
         addColorToKey(guess[index].letter, guess[index].color);
       }, 500 * index);
