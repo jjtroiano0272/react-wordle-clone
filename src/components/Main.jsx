@@ -203,9 +203,14 @@ export default function Main(props) {
     }
   };
 
+  function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
   const addColorToKey = (keyLetter, color) => {
+    // DEBUG: key is the thing that is returning null
     const key = document.getElementById(keyLetter);
     console.log(key);
+    // DEBUG: this is where we are getting that uncaught error of reading null
     key.classList.add('color');
   };
 
