@@ -18,7 +18,19 @@ export default function Main(props) {
   const tileDisplay = document.querySelector('.tile-container');
   // const keyboard = document.querySelector('.key-container');
 
-  const word = 'SUPER';
+  var word = 'SUPER';
+
+  // const getWord = () => {
+  //   fetch('http://localhost:8000/word')
+  //     .then(response => response.json())
+  //     .then(json => {
+  //       console.log(json);
+  //       word = json.toUppserCase();
+  //     })
+  //     .catch(err => console.log(err));
+  // };
+  // getWord();
+
   const keys = [
     'Q',
     'W',
@@ -192,33 +204,35 @@ export default function Main(props) {
   };
 
   const addColorToKey = (keyLetter, color) => {
-    const key = document.getElementById(keyLetter);
-    key.classList.add(color);
+    // Here's where the bug was popping up
+    const key = document.querySelector(`[data="${keyLetter}"]`);
+    console.log(key);
+    key.classList.add('color');
   };
 
   // remove color from Key?
 
   const flipTile = () => {
+    let checkWord = word;
+    const guess = [];
     const rowTiles = document.querySelector(
       `#guessRow-${currentRow}`
     ).childNodes;
-    let checkWord = word;
-    const guess = [];
 
-    rowTitles.forEach(tile =>
-      guess.push({ letter: tile.getAtribute('data'), color: 'grey-overlay' })
-    );
+    rowTiles.forEach(tile => {
+      guess.push({ letter: tile.getAttribute('data'), color: 'grey-overlay' });
+    });
 
     // If user guess has the correct letter in the correct spot, color it green
-    guess.forEach((gues, index) => {
-      if (guess.letter === word[index]) {
+    guess.forEach((guess, index) => {
+      if (guess.letter == word[index]) {
         guess.color = 'green-overlay';
         checkWord = checkWord.replace(guess.letter, '');
       }
     });
 
     // If user guess has the correct letter in the wrong spot, color it yellow
-    guess.forEach((gues, index) => {
+    guess.forEach(guess => {
       if (checkWord.includes(guess.letter)) {
         guess.color = 'yellow-overlay';
         checkWord = checkWord.replace(guess.letter, '');
@@ -227,6 +241,7 @@ export default function Main(props) {
 
     rowTiles.forEach((tile, index) => {
       setTimeout(() => {
+        tile.classList.add('flip');
         tile.classList.add(guess[index].color);
         addColorToKey(guess[index].letter, guess[index].color);
       }, 500 * index);

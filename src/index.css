@@ -177,13 +177,16 @@ input.search-dark:focus {
 
 .grey-overlay {
   background-color: #3a3a3c !important;
+  color: #fff !important;
   border: none !important;
 }
 .yellow-overlay {
   background-color: #b59f3a !important;
+  color: #fff !important;
   border: none !important;
 }
 .green-overlay {
   background-color: #538d4e !important;
+  color: #fff !important;
   border: none !important;
 }
