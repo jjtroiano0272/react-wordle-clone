@@ -204,8 +204,7 @@ export default function Main(props) {
   };
 
   const addColorToKey = (keyLetter, color) => {
-    // Here's where the bug was popping up
-    const key = document.querySelector(`[data="${keyLetter}"]`);
+    const key = document.getElementById(keyLetter);
     console.log(key);
     key.classList.add('color');
   };
