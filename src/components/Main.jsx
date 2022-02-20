@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
-import $ from 'jquery';
 import axios from 'axios';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -172,7 +171,6 @@ export default function Main(props) {
 
     if (currentTile > 4) {
       console.log(`Guess is ${guess}\nWordle is ${word}`);
-      flipTile();
       if (guess === word) {
         showMessage('Success!');
         setGameOver(true);
@@ -189,48 +187,6 @@ export default function Main(props) {
         }
       }
     }
-  };
-
-  const addColorToKey = (keyLetter, color) => {
-    const key = document.getElementById(keyLetter);
-    key.classList.add(color);
-  };
-
-  // remove color from Key?
-
-  const flipTile = () => {
-    const rowTiles = document.querySelector(
-      `#guessRow-${currentRow}`
-    ).childNodes;
-    let checkWord = word;
-    const guess = [];
-
-    rowTitles.forEach(tile =>
-      guess.push({ letter: tile.getAtribute('data'), color: 'grey-overlay' })
-    );
-
-    // If user guess has the correct letter in the correct spot, color it green
-    guess.forEach((gues, index) => {
-      if (guess.letter === word[index]) {
-        guess.color = 'green-overlay';
-        checkWord = checkWord.replace(guess.letter, '');
-      }
-    });
-
-    // If user guess has the correct letter in the wrong spot, color it yellow
-    guess.forEach((gues, index) => {
-      if (checkWord.includes(guess.letter)) {
-        guess.color = 'yellow-overlay';
-        checkWord = checkWord.replace(guess.letter, '');
-      }
-    });
-
-    rowTiles.forEach((tile, index) => {
-      setTimeout(() => {
-        tile.classList.add(guess[index].color);
-        addColorToKey(guess[index].letter, guess[index].color);
-      }, 500 * index);
-    });
   };
 
   return (
