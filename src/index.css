@@ -152,7 +152,8 @@ input.search-dark:focus {
   display: flex;
 }
 .tile-container .tile {
-  width: 62px;
+  /* width: 62px; */
+  width: 14.97584541em;
   height: 62px;
   border: 2px solid #a7a3a3;
   color: rgb(221, 219, 219);

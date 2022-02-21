@@ -16,19 +16,20 @@ export default function Main(props) {
   // const keyboard = document.querySelector('.key-container');
   const messageDisplay = document.querySelector('.msg-container');
 
-  const options = {
+  let wordle = '';
+  const wordleLength = 6;
+  const apiCallOptions = {
     method: 'GET',
     url: 'https://random-words5.p.rapidapi.com/getMultipleRandom',
-    params: { count: '5', wordLength: '5' },
+    params: { count: '5', wordLength: wordleLength },
     headers: {
       'x-rapidapi-host': 'random-words5.p.rapidapi.com',
       'x-rapidapi-key': 'ff25be3b77msh3b29f7f8eea09bap187d99jsn385e047fde4c',
     },
   };
 
-  let wordle = '';
   axios
-    .request(options)
+    .request(apiCallOptions)
     .then(function (response) {
       console.log(response.data[0].toUpperCase());
       wordle = response.data[0].toUpperCase();
@@ -73,14 +74,16 @@ export default function Main(props) {
   let currentTile = 0;
   const [gameOver, setGameOver] = useState(false);
 
-  const guessRows = [
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-  ];
+  const guessRows = [...Array(6)].map(row => Array(wordleLength).fill(''));
+  console.log(guessRows.length);
+  // const guessRows = [
+  //   ['', '', '', '', ''],
+  //   ['', '', '', '', ''],
+  //   ['', '', '', '', ''],
+  //   ['', '', '', '', ''],
+  //   ['', '', '', '', ''],
+  //   ['', '', '', '', ''],
+  // ];
   // for every guessRow =>
 
   const guessRowsDisplay = guessRows.map((row, rowIndex) => {
@@ -133,7 +136,7 @@ export default function Main(props) {
 
   const addLetter = letter => {
     // TODO: Here's the part you'll change for different game variants.
-    if (currentTile < 5 && currentRow < 6) {
+    if (currentTile < wordleLength && currentRow < guessRows.length) {
       const tile = document.getElementById(
         `guessRow-${currentRow}-tile-${currentTile}`
       );
@@ -162,7 +165,7 @@ export default function Main(props) {
     // If guess row array is filled
     const guess = guessRows[currentRow].join('');
 
-    if (currentTile > 4) {
+    if (currentTile > wordleLength - 1) {
       console.log(`Guess is ${guess}\nWordle is ${wordle}`);
       flipTile();
       if (guess === wordle) {
@@ -170,12 +173,12 @@ export default function Main(props) {
         setGameOver(true);
         return;
       } else {
-        if (currentRow >= 5) {
+        if (currentRow >= wordleLength) {
           setGameOver(true);
           showMessage('Game over! Come back tomorrow!');
           return;
         }
-        if (currentRow < 5) {
+        if (currentRow < wordleLength) {
           currentRow++;
           currentTile = 0;
         }
