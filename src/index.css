@@ -1,3 +1,8 @@
+:root {
+  --dark-primary: #121212;
+  --dark-secondary: #121212;
+}
+
 body {
   background-color: #121212;
   margin: 0;
@@ -150,6 +155,7 @@ input.search-dark:focus {
   width: 62px;
   height: 62px;
   border: 2px solid #a7a3a3;
+  color: rgb(221, 219, 219);
   box-sizing: border-box;
   display: flex;
   justify-content: center;
