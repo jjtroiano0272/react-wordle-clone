@@ -12,12 +12,11 @@ import rainbowSpinLoader from './common/rainbowSpinLoader'; // just return <e>ra
 // User-generated component imports go here
 
 export default function Main(props) {
-  const [gameOver, setGameOver] = useState(false);
-
   const tileDisplay = document.querySelector('.tile-container');
   // const keyboard = document.querySelector('.key-container');
+  const messageDisplay = document.querySelector('.msg-container');
 
-  const word = 'SUPER';
+  const wordle = 'SUPER';
   const keys = [
     'Q',
     'W',
@@ -38,7 +37,7 @@ export default function Main(props) {
     'J',
     'K',
     'L',
-    'ENTER',
+    '«',
     'Z',
     'X',
     'C',
@@ -46,11 +45,12 @@ export default function Main(props) {
     'B',
     'N',
     'M',
-    '«',
+    'ENTER',
   ];
 
   let currentRow = 0;
   let currentTile = 0;
+  const [gameOver, setGameOver] = useState(false);
 
   const guessRows = [
     ['', '', '', '', ''],
@@ -137,6 +137,31 @@ export default function Main(props) {
     }
   };
 
+  const checkRow = () => {
+    // If guess row array is filled
+    const guess = guessRows[currentRow].join('');
+
+    if (currentTile > 4) {
+      console.log(`Guess is ${guess}\nWordle is ${wordle}`);
+      flipTile();
+      if (guess === wordle) {
+        showMessage('Success!');
+        setGameOver(true);
+        return;
+      } else {
+        if (currentRow >= 5) {
+          setGameOver(true);
+          showMessage('Game over! Come back tomorrow!');
+          return;
+        }
+        if (currentRow < 5) {
+          currentRow++;
+          currentTile = 0;
+        }
+      }
+    }
+  };
+
   const showMessage = message => {
     // GFYCat Gif
     // return (
@@ -165,28 +190,25 @@ export default function Main(props) {
     // React approach
   };
 
-  const checkRow = () => {
-    // If guess row array is filled
-    const guess = guessRows[currentRow].join('');
+  const flipTile = () => {
+    const rowTiles = document.querySelector(
+      '#guessRow-' + currentRow
+    ).childNodes;
 
-    if (currentTile > 4) {
-      console.log(`Guess is ${guess}\nWordle is ${word}`);
-      if (guess === word) {
-        showMessage('Success!');
-        setGameOver(true);
-        return;
-      } else {
-        if (currentRow >= 5) {
-          setGameOver(false);
-          showMessage('Game over!');
-          return;
+    rowTiles.forEach((tile, index) => {
+      const dataLetter = tile.getAttribute('data');
+
+      setTimeout(() => {
+        tile.classList.add('flip');
+        if (dataLetter == wordle[index]) {
+          tile.classList.add('green-overlay');
+        } else if (wordle.includes(dataLetter)) {
+          tile.classList.add('yellow-overlay');
+        } else {
+          tile.classList.add('grey-overlay');
         }
-        if (currentRow < 5) {
-          currentRow++;
-          currentTile = 0;
-        }
-      }
-    }
+      }, 500 * index);
+    });
   };
 
   return (
