@@ -16,7 +16,28 @@ export default function Main(props) {
   // const keyboard = document.querySelector('.key-container');
   const messageDisplay = document.querySelector('.msg-container');
 
-  const wordle = 'SUPER';
+  const options = {
+    method: 'GET',
+    url: 'https://random-words5.p.rapidapi.com/getMultipleRandom',
+    params: { count: '5', wordLength: '5' },
+    headers: {
+      'x-rapidapi-host': 'random-words5.p.rapidapi.com',
+      'x-rapidapi-key': 'ff25be3b77msh3b29f7f8eea09bap187d99jsn385e047fde4c',
+    },
+  };
+
+  let wordle = '';
+  axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data[0].toUpperCase());
+      wordle = response.data[0].toUpperCase();
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+
+  // const wordle = 'SUPER';
   const keys = [
     'Q',
     'W',
