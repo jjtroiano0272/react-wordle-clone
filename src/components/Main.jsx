@@ -190,6 +190,12 @@ export default function Main(props) {
     // React approach
   };
 
+  const addColorToKey = (keyLetter, color) => {
+    const key = document.getElementById(keyLetter);
+    // Here's the bug. Right here.
+    key.classList.add(color);
+  };
+
   const flipTile = () => {
     const rowTiles = document.querySelector(
       '#guessRow-' + currentRow
@@ -202,6 +208,7 @@ export default function Main(props) {
         tile.classList.add('flip');
         if (dataLetter == wordle[index]) {
           tile.classList.add('green-overlay');
+          addColorToKey(dataLetter, 'green-overlay');
         } else if (wordle.includes(dataLetter)) {
           tile.classList.add('yellow-overlay');
         } else {
