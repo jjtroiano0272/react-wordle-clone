@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import axios from 'axios';
+// import 'dotenv/config';
+// import express from 'express';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -24,21 +26,58 @@ export default function Main(props) {
     params: { count: '5', wordLength: wordleLength },
     headers: {
       'x-rapidapi-host': 'random-words5.p.rapidapi.com',
+      // 'x-rapidapi-key': process.env.RAPID_API_KEY,
       'x-rapidapi-key': 'ff25be3b77msh3b29f7f8eea09bap187d99jsn385e047fde4c',
     },
   };
 
-  axios
-    .request(apiCallOptions)
-    .then(function (response) {
-      console.log(response.data[0].toUpperCase());
-      wordle = response.data[0].toUpperCase();
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
+  const getWordle = () => {
+    axios
+      .request(apiCallOptions)
+      .then(function (response) {
+        console.log(`Wordle is: ${response.data[0].toUpperCase()}`);
+        wordle = response.data[0].toUpperCase();
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+  getWordle();
 
-  // const wordle = 'SUPER';
+  const isInDictionary = word => {
+    var options = {
+      method: 'GET',
+      url: 'https://twinword-word-graph-dictionary.p.rapidapi.com/theme/',
+      // Entry is the word we're checking
+      params: { entry: word },
+      headers: {
+        'x-rapidapi-host': 'twinword-word-graph-dictionary.p.rapidapi.com',
+        'x-rapidapi-key': 'ff25be3b77msh3b29f7f8eea09bap187d99jsn385e047fde4c',
+      },
+    };
+
+    let exists = false;
+    let resultCode;
+
+    axios
+      .request(options)
+      .then(function (response) {
+        resultCode = response.data.result_code;
+
+        if (resultCode == 200) {
+          exists = true;
+        }
+        if (resultCode == 462) {
+          exists = false;
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+
+    return exists;
+  };
+
   const keys = [
     'Q',
     'W',
@@ -75,7 +114,7 @@ export default function Main(props) {
   const [gameOver, setGameOver] = useState(false);
 
   const guessRows = [...Array(6)].map(row => Array(wordleLength).fill(''));
-  console.log(guessRows.length);
+  console.log(`There are ${guessRows.length} guessRows.`);
   // const guessRows = [
   //   ['', '', '', '', ''],
   //   ['', '', '', '', ''],
@@ -164,9 +203,16 @@ export default function Main(props) {
   const checkRow = () => {
     // If guess row array is filled
     const guess = guessRows[currentRow].join('');
+    console.log(`Guess is ${guess}\nWordle is ${wordle}`);
 
+    // If user has filled out the entire row with a guess, check it.
     if (currentTile > wordleLength - 1) {
-      console.log(`Guess is ${guess}\nWordle is ${wordle}`);
+      // Check if word exists in dictionary
+      if (!isInDictionary(guess)) {
+        showMessage('Not a word!');
+        return;
+      }
+
       flipTile();
       if (guess === wordle) {
         showMessage('Success!');
