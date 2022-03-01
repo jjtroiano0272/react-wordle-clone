@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import { nanoid } from 'nanoid';
 import axios from 'axios';
 // import 'dotenv/config';
@@ -10,6 +12,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Jump from 'react-reveal';
 import rainbowSpinLoader from './common/rainbowSpinLoader'; // just return <e>rainbowSpinLoader()</e>
 // User-generated component imports go here
 
@@ -18,64 +21,94 @@ export default function Main(props) {
   // const keyboard = document.querySelector('.key-container');
   const messageDisplay = document.querySelector('.msg-container');
 
+  const [gameOver, setGameOver] = useState(false);
+  let currentRow = 0;
+  let currentTile = 0;
   let wordle = '';
+  // TODO: Turn this back on when the logic works and you just need a real source for it.
   const wordleLength = 6;
-  const apiCallOptions = {
+  // Here's the paid option for an API call. I'm currently over quota [01MAR22]
+  // const apiCallOptions = {
+  //   method: 'GET',
+  //   url: 'https://random-words5.p.rapidapi.com/getMultipleRandom',
+  //   params: { count: '5', wordLength: wordleLength },
+  //   headers: {
+  //     'x-rapidapi-host': 'random-words5.p.rapidapi.com',
+  //     // 'x-rapidapi-key': process.env.RAPID_API_KEY,
+  //     'x-rapidapi-key': 'ff25be3b77msh3b29f7f8eea09bap187d99jsn385e047fde4c',
+  //   },
+  // };
+
+  // const getWordle = () => {
+  //   axios
+  //     .request(apiCallOptions)
+  //     .then(function (response) {
+  //       console.log(`Wordle is: ${response.data[0].toUpperCase()}`);
+  //       wordle = response.data[0].toUpperCase();
+  //     })
+  //     .catch(function (error) {
+  //       console.error(error);
+  //     });
+  // };
+  // getWordle();
+
+  const getWordleTEST = () => {
+    axios
+      .get('testData.json')
+      .then(response => {
+        const randIndex = Math.floor(
+          Math.random() * Object.keys(response.data).length
+        );
+        wordle = response.data[randIndex].toUpperCase();
+        console.log(`Wordle is: ${wordle.toUpperCase()}`);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+  getWordleTEST();
+
+  var PAID_options = {
     method: 'GET',
-    url: 'https://random-words5.p.rapidapi.com/getMultipleRandom',
-    params: { count: '5', wordLength: wordleLength },
+    url: 'https://twinword-word-graph-dictionary.p.rapidapi.com/theme/',
+    // Entry is the word we're checking
+    params: { entry: wordle },
     headers: {
-      'x-rapidapi-host': 'random-words5.p.rapidapi.com',
-      // 'x-rapidapi-key': process.env.RAPID_API_KEY,
+      'x-rapidapi-host': 'twinword-word-graph-dictionary.p.rapidapi.com',
       'x-rapidapi-key': 'ff25be3b77msh3b29f7f8eea09bap187d99jsn385e047fde4c',
     },
   };
 
-  const getWordle = () => {
-    axios
-      .request(apiCallOptions)
-      .then(function (response) {
-        console.log(`Wordle is: ${response.data[0].toUpperCase()}`);
-        wordle = response.data[0].toUpperCase();
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-  };
-  getWordle();
+  const inDictionary = async word => {
+    let exists;
 
-  const isInDictionary = word => {
     var options = {
       method: 'GET',
       url: 'https://twinword-word-graph-dictionary.p.rapidapi.com/theme/',
-      // Entry is the word we're checking
-      params: { entry: word },
+      params: { entry: `${word}` },
       headers: {
         'x-rapidapi-host': 'twinword-word-graph-dictionary.p.rapidapi.com',
         'x-rapidapi-key': 'ff25be3b77msh3b29f7f8eea09bap187d99jsn385e047fde4c',
       },
     };
 
-    let exists = false;
-    let resultCode;
+    try {
+      const response = await axios.request(options);
+      console.log(response.data.result_code);
 
-    axios
-      .request(options)
-      .then(function (response) {
-        resultCode = response.data.result_code;
+      if (response.data.result_code == 200) {
+        exists = true;
+      } else if (response.data.result_code == 462) {
+        exists = false;
+      }
 
-        if (resultCode == 200) {
-          exists = true;
-        }
-        if (resultCode == 462) {
-          exists = false;
-        }
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+      console.log(`Exiting. ${word} found?: ${exists}`);
 
-    return exists;
+      return exists;
+    } catch (error) {
+      console.error(error);
+      exists = false;
+    }
   };
 
   const keys = [
@@ -109,21 +142,8 @@ export default function Main(props) {
     'ENTER',
   ];
 
-  let currentRow = 0;
-  let currentTile = 0;
-  const [gameOver, setGameOver] = useState(false);
-
   const guessRows = [...Array(6)].map(row => Array(wordleLength).fill(''));
   console.log(`There are ${guessRows.length} guessRows.`);
-  // const guessRows = [
-  //   ['', '', '', '', ''],
-  //   ['', '', '', '', ''],
-  //   ['', '', '', '', ''],
-  //   ['', '', '', '', ''],
-  //   ['', '', '', '', ''],
-  //   ['', '', '', '', ''],
-  // ];
-  // for every guessRow =>
 
   const guessRowsDisplay = guessRows.map((row, rowIndex) => {
     return (
@@ -200,33 +220,37 @@ export default function Main(props) {
     }
   };
 
-  const checkRow = () => {
+  const checkRow = async () => {
+    console.log(`At top of checkRow`);
     // If guess row array is filled
     const guess = guessRows[currentRow].join('');
     console.log(`Guess is ${guess}\nWordle is ${wordle}`);
 
     // If user has filled out the entire row with a guess, check it.
+    // TODO: Can I write this more elegantly? This logic is kinda gross
     if (currentTile > wordleLength - 1) {
       // Check if word exists in dictionary
-      if (!isInDictionary(guess)) {
+      console.log(`Checking ${guess}...\n${await inDictionary(guess)}`);
+      if ((await inDictionary(guess)) === false) {
         showMessage('Not a word!');
-        return;
       }
-
-      flipTile();
-      if (guess === wordle) {
-        showMessage('Success!');
-        setGameOver(true);
-        return;
-      } else {
-        if (currentRow >= wordleLength) {
+      if ((await inDictionary(guess)) === true) {
+        console.log('Flipping!');
+        flipTile();
+        if (guess === wordle) {
+          showMessage('Success!');
           setGameOver(true);
-          showMessage('Game over! Come back tomorrow!');
           return;
-        }
-        if (currentRow < wordleLength) {
-          currentRow++;
-          currentTile = 0;
+        } else {
+          if (currentRow >= wordleLength) {
+            setGameOver(true);
+            showMessage('Game over! Come back tomorrow!');
+            return;
+          }
+          if (currentRow < wordleLength) {
+            currentRow++;
+            currentTile = 0;
+          }
         }
       }
     }
@@ -315,12 +339,37 @@ export default function Main(props) {
     });
   };
 
+  const Alert = forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+  });
+
+  const [snackBarOpen, setSnackBarOpen] = useState(true);
+  const handleCloseSnackbar = () => {
+    setSnackBarOpen(false);
+  };
+
   return (
     // <div className='container'>
 
     <div className='game-container'>
       <div className='msg-container'>
         {/* {gameOver && showMessage('helloooooo')} */}
+        <Snackbar
+          open={snackBarOpen}
+          autoHideDuration={8000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          // message={`This current version doesn't have access to the random word API--it's over the quota for a free API. It'll be back online soon.`}
+        >
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity='info'
+            sx={{ width: '100%' }}
+          >
+            This current version doesn't have access to the random word
+            API--it's over the quota for a free API. It'll be back online soon.
+          </Alert>
+        </Snackbar>
       </div>
       <div className='tile-container'>{guessRowsDisplay}</div>
       <div className='key-container'>{keyboard}</div>

@@ -157,6 +157,7 @@ export default function Navbar({ toggleDark, setToggleDark }) {
   const handleOpenNavMenu = event => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = event => {
     setAnchorElUser(event.currentTarget);
   };
@@ -199,7 +200,7 @@ export default function Navbar({ toggleDark, setToggleDark }) {
     isAuthenticated && CryptoJS.MD5(user.email).toString().trim().toLowerCase();
 
   return (
-    <AppBar position='static' className='mb-4' color='primary'>
+    <AppBar position='static' className='mb-4' color='secondary'>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <Typography
