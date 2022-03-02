@@ -54,13 +54,18 @@ export default function Main(props) {
 
   const getWordleTEST = () => {
     axios
-      .get('testData.json')
+      .get(
+        'https://raw.githubusercontent.com/RazorSh4rk/random-word-api/master/words.json'
+      )
       .then(response => {
+        // wordle = response.data[randIndex].toUpperCase();
+        // console.log(`Wordle is: ${wordle.toUpperCase()}`);
+        const responseList = response.data.filter(word => word.length === 6);
         const randIndex = Math.floor(
-          Math.random() * Object.keys(response.data).length
+          Math.random() * Object.keys(responseList).length
         );
-        wordle = response.data[randIndex].toUpperCase();
-        console.log(`Wordle is: ${wordle.toUpperCase()}`);
+        wordle = responseList[randIndex].toUpperCase();
+        console.log(wordle);
       })
       .catch(error => {
         console.error(error);
@@ -177,15 +182,11 @@ export default function Main(props) {
     console.log(`${letter} clicked!`);
 
     if (letter === '«') {
-      console.log('delete letter');
-      console.log(`guessRows: ${guessRows}`);
       deleteLetter();
       return;
     }
     if (letter === 'ENTER') {
       checkRow();
-      console.log('check row');
-      console.log(`guessRows: ${guessRows}`);
       return;
     }
 
